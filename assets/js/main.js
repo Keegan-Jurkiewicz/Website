@@ -399,3 +399,46 @@
 					});
 
 })(jQuery);
+
+document.addEventListener("DOMContentLoaded", function () {
+	const tripTypeSelect = document.querySelector('select[name="trip_type"]');
+	const returnDateContainer = document.getElementById('returnDateContainer');
+	const legsList = document.getElementById('legsList');
+	const addLegBtn = document.getElementById('addLegBtn');
+	const clearLegsBtn = document.getElementById('clearLegsBtn');
+  
+	// Show/hide return date for Round Trip
+	tripTypeSelect.addEventListener("change", function () {
+	  if (this.value === "Round Trip") {
+		returnDateContainer.style.display = "block";
+	  } else {
+		returnDateContainer.style.display = "none";
+	  }
+	});
+  
+	// Add new leg dynamically
+	addLegBtn.addEventListener("click", function () {
+	  const newLeg = document.createElement("div");
+	  newLeg.classList.add("fields", "multi-leg");
+	  newLeg.innerHTML = `
+		<div class="field half">
+		  <label>From:</label>
+		  <input type="text" name="leg_from[]" placeholder="e.g. TEB" autocomplete="off">
+		</div>
+		<div class="field half">
+		  <label>To:</label>
+		  <input type="text" name="leg_to[]" placeholder="e.g. PBI" autocomplete="off">
+		</div>
+		<div class="field">
+		  <label>Departure Date &amp; Time:</label>
+		  <input type="datetime-local" name="leg_datetime[]" step="60">
+		</div>
+	  `;
+	  legsList.appendChild(newLeg);
+	});
+  
+	// Clear all legs
+	clearLegsBtn.addEventListener("click", function () {
+	  legsList.innerHTML = "";
+	});
+  });  
