@@ -531,20 +531,20 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // ===== Quote form logic (legs management) =====
 (function () {
-	// Bail out if we're not on the contact / quote form
-	var tripTypeEl = document.getElementById('tripType') || document.querySelector('select[name="trip_type"]');
-	var legFromEl = document.getElementById('legFrom');
-	var legToEl = document.getElementById('legTo');
-	var legDateTimeEl = document.getElementById('legDateTime');
-	var addLegBtn = document.getElementById('addLegBtn');
-	var clearLegsBtn = document.getElementById('clearLegsBtn');
-	var legsListEl = document.getElementById('legsList');
-	var itineraryDisplayEl = document.getElementById('itineraryDisplay');
-	var legsJsonEl = document.getElementById('legsJson');
+	// Element refs
+	var tripTypeEl          = document.getElementById('tripType') || document.querySelector('select[name="trip_type"]');
+	var legFromEl           = document.getElementById('legFrom');
+	var legToEl             = document.getElementById('legTo');
+	var legDateTimeEl       = document.getElementById('legDateTime');   // type="datetime-local"
+	var addLegBtn           = document.getElementById('addLegBtn');
+	var clearLegsBtn        = document.getElementById('clearLegsBtn');
+	var legsListEl          = document.getElementById('legsList');
+	var itineraryDisplayEl  = document.getElementById('itineraryDisplay');
+	var legsJsonEl          = document.getElementById('legsJson');
   
-	if (!tripTypeEl || !legFromEl || !legToEl || !legDateTimeEl || !addLegBtn) return;
+	if (!tripTypeEl || !legFromEl || !legToEl || !legDateTimeEl || !addLegBtn || !legsListEl || !itineraryDisplayEl || !legsJsonEl) return;
   
-	/** In-memory legs */
+	// In-memory legs
 	var legs = [];
   
 	function getTripType() {
@@ -554,41 +554,45 @@ document.addEventListener('DOMContentLoaded', () => {
 	  return 'one';
 	}
   
+	function formatDT(dt) {
+	  if (!dt) return '';
+	  var d = new Date(dt);
+	  if (isNaN(d)) return dt;
+	  var yyyy = d.getFullYear();
+	  var mm   = String(d.getMonth() + 1).padStart(2, '0');
+	  var dd   = String(d.getDate()).padStart(2, '0');
+	  var hh   = String(d.getHours()).padStart(2, '0');
+	  var mi   = String(d.getMinutes()).padStart(2, '0');
+	  return yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + mi;
+	}
+  
 	function renderLegs() {
-	  // List
+	  // list
 	  legsListEl.innerHTML = '';
 	  legs.forEach(function (leg, idx) {
 		var row = document.createElement('div');
-		row.style.display = 'flex';
-		row.style.alignItems = 'center';
-		row.style.gap = '0.5rem';
-		row.style.justifyContent = 'space-between';
-		row.style.margin = '0.25rem 0';
-  
-		var txt = document.createElement('div');
-		var timeStr = leg.datetime ? (' @ ' + leg.datetime) : ' (date/time TBD)';
-		txt.textContent = 'Leg ' + (idx + 1) + ': ' + leg.from + ' ➝ ' + leg.to + timeStr;
-  
-		var btn = document.createElement('button');
-		btn.type = 'button';
-		btn.className = 'button small';
-		btn.textContent = 'Remove';
-		btn.addEventListener('click', function () {
+		row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin:.4rem 0;';
+		var label = document.createElement('div');
+		label.textContent = 'Leg ' + (idx + 1) + ': ' + leg.from + ' ➝ ' + leg.to + (leg.datetime ? (' @ ' + formatDT(leg.datetime)) : ' (date/time TBD)');
+		var remove = document.createElement('button');
+		remove.type = 'button';
+		remove.className = 'button small';
+		remove.textContent = 'Remove';
+		remove.addEventListener('click', function () {
 		  legs.splice(idx, 1);
 		  renderLegs();
 		});
-  
-		row.appendChild(txt);
-		row.appendChild(btn);
+		row.appendChild(label);
+		row.appendChild(remove);
 		legsListEl.appendChild(row);
 	  });
   
-	  // Itinerary textarea
-	  itineraryDisplayEl.value = legs.map(function (leg, idx) {
-		return 'Leg ' + (idx + 1) + ': ' + leg.from + ' ➝ ' + leg.to + (leg.datetime ? ' @ ' + leg.datetime : ' (date/time TBD)');
+	  // itinerary textarea (read-only)
+	  itineraryDisplayEl.value = legs.map(function (leg, i) {
+		return 'Leg ' + (i + 1) + ': ' + leg.from + ' ➝ ' + leg.to + (leg.datetime ? (' @ ' + formatDT(leg.datetime)) : ' (date/time TBD)');
 	  }).join('\n');
   
-	  // Hidden JSON
+	  // hidden JSON for Formspree
 	  legsJsonEl.value = JSON.stringify(legs);
 	}
   
@@ -596,6 +600,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	  legFromEl.value = '';
 	  legToEl.value = '';
 	  legDateTimeEl.value = '';
+	  // ensure editable
+	  legDateTimeEl.readOnly = false;
+	  legDateTimeEl.disabled = false;
 	}
   
 	function clearLegs() {
@@ -605,10 +612,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
   
 	function addLeg() {
-	  var from = (legFromEl.value || '').trim();
-	  var to = (legToEl.value || '').trim();
-	  var dt = (legDateTimeEl.value || '').trim();
-	  if (!from || !to) return; // must have routing; date can be blank (TBD)
+	  var from = (legFromEl.value || '').trim().toUpperCase();
+	  var to   = (legToEl.value || '').trim().toUpperCase();
+	  var dt   = (legDateTimeEl.value || '').trim();
+  
+	  if (!from || !to) {
+		alert('Please enter both From and To.');
+		return;
+	  }
+  
+	  // For legs, datetime is optional (TBD allowed). If you want to require it, uncomment:
+	  // if (!dt) { alert('Please select a departure date & time.'); return; }
   
 	  legs.push({ from: from, to: to, datetime: dt });
 	  renderLegs();
@@ -616,34 +630,44 @@ document.addEventListener('DOMContentLoaded', () => {
 	  var type = getTripType();
   
 	  if (type === 'round' && legs.length === 1) {
-		// Prefill return editor (swap FROM/TO), clear datetime so user can pick it
+		// Prefill editor for the *return* leg, but DO NOT add it.
 		legFromEl.value = to;
 		legToEl.value = from;
 		legDateTimeEl.value = '';
+  
+		// Guarantee user can pick date/time now
+		legDateTimeEl.readOnly = false;
+		legDateTimeEl.disabled = false;
+  
+		// focus and try to open native picker (supported browsers)
 		legDateTimeEl.focus();
+		if (typeof legDateTimeEl.showPicker === 'function') {
+		  setTimeout(function () { try { legDateTimeEl.showPicker(); } catch (_) {} }, 0);
+		}
 	  } else if (type === 'multi') {
-		// Chain routing: FROM = last TO; clear TO + date/time
+		// Chain: next FROM = last TO, and clear others
 		legFromEl.value = to;
 		legToEl.value = '';
 		legDateTimeEl.value = '';
 		legToEl.focus();
 	  } else {
-		// One-way: just clear everything
+		// One-way: clean slate
 		clearEditor();
 	  }
 	}
   
 	// Events
 	addLegBtn.addEventListener('click', addLeg);
-	clearLegsBtn && clearLegsBtn.addEventListener('click', clearLegs);
+	if (clearLegsBtn) clearLegsBtn.addEventListener('click', clearLegs);
   
 	tripTypeEl.addEventListener('change', function () {
-	  // Reset legs and editor whenever trip type changes
+	  // Reset when switching types (keeps things predictable)
 	  clearLegs();
 	});
   
-	// If someone changes the top "From/To" fields after adding legs, we do nothing
-	// (legs already added are preserved until Clear Legs is used).
-  })();
+	// Make sure nothing else left this input locked
+	legDateTimeEl.readOnly = false;
+	legDateTimeEl.disabled = false;
+  })();  
   
 })(jQuery);
