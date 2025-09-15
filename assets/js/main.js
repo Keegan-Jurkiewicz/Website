@@ -397,48 +397,59 @@
 					$window.on('load', function() {
 						$main._show(location.hash.substr(1), true);
 					});
+					document.addEventListener("DOMContentLoaded", function () {
+						const addLegBtn = document.getElementById("addLegBtn");
+						const clearLegsBtn = document.getElementById("clearLegsBtn");
+						const legsList = document.getElementById("legsList");
+					  
+						if (addLegBtn && legsList) {
+						  addLegBtn.addEventListener("click", function () {
+							const legDiv = document.createElement("div");
+							legDiv.className = "leg-entry";
+							legDiv.innerHTML = `
+							  <div class="fields">
+								<label>From:</label>
+								<input type="text" name="leg_from[]" placeholder="e.g. TEB" required>
+							  </div>
+							  <div class="fields">
+								<label>To:</label>
+								<input type="text" name="leg_to[]" placeholder="e.g. PBI" required>
+							  </div>
+							  <div class="fields">
+								<label>Departure Date & Time:</label>
+								<input type="datetime-local" name="leg_datetime[]" required>
+							  </div>
+							  <button type="button" class="removeLegBtn">Remove</button>
+							`;
+							legsList.appendChild(legDiv);
+					  
+							// Handle remove button
+							legDiv.querySelector(".removeLegBtn").addEventListener("click", () => {
+							  legsList.removeChild(legDiv);
+							});
+						  });
+					  
+						  clearLegsBtn.addEventListener("click", function () {
+							legsList.innerHTML = "";
+						  });
+						}
+					  });
+					  const tripTypeSelect = document.querySelector('select[name="trip_type"]');
+
+					  	if (tripTypeSelect) {
+							tripTypeSelect.addEventListener("change", function () {
+						  if (this.value === "Round Trip") {
+							legsList.innerHTML = ""; // Clear existing
+							addLegBtn.click(); // Add outbound leg
+							addLegBtn.click(); // Add return leg
+						  } else if (this.value === "Multi City") {
+							legsList.innerHTML = ""; // User will add manually
+						  } else {
+							legsList.innerHTML = ""; // One way, just one leg manually
+						  }
+						});
+					  }
+					   
+
 
 })(jQuery);
-
-document.addEventListener("DOMContentLoaded", function () {
-	const tripTypeSelect = document.querySelector('select[name="trip_type"]');
-	const returnDateContainer = document.getElementById('returnDateContainer');
-	const legsList = document.getElementById('legsList');
-	const addLegBtn = document.getElementById('addLegBtn');
-	const clearLegsBtn = document.getElementById('clearLegsBtn');
-  
-	// Show/hide return date for Round Trip
-	tripTypeSelect.addEventListener("change", function () {
-	  if (this.value === "Round Trip") {
-		returnDateContainer.style.display = "block";
-	  } else {
-		returnDateContainer.style.display = "none";
-	  }
-	});
-  
-	// Add new leg dynamically
-	addLegBtn.addEventListener("click", function () {
-	  const newLeg = document.createElement("div");
-	  newLeg.classList.add("fields", "multi-leg");
-	  newLeg.innerHTML = `
-		<div class="field half">
-		  <label>From:</label>
-		  <input type="text" name="leg_from[]" placeholder="e.g. TEB" autocomplete="off">
-		</div>
-		<div class="field half">
-		  <label>To:</label>
-		  <input type="text" name="leg_to[]" placeholder="e.g. PBI" autocomplete="off">
-		</div>
-		<div class="field">
-		  <label>Departure Date &amp; Time:</label>
-		  <input type="datetime-local" name="leg_datetime[]" step="60">
-		</div>
-	  `;
-	  legsList.appendChild(newLeg);
-	});
-  
-	// Clear all legs
-	clearLegsBtn.addEventListener("click", function () {
-	  legsList.innerHTML = "";
-	});
-  });  
