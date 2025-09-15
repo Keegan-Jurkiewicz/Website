@@ -195,11 +195,16 @@
   <!-- Additional Services (checkboxes) -->
   <label class="group-label">Additional Services:</label>
   <div class="services-inline">
-    <label><input type="checkbox" name="services[]" value="WiFi"> WiFi</label>
-    <label><input type="checkbox" name="services[]" value="Catering"> Catering</label>
-    <label><input type="checkbox" name="services[]" value="Ground Transportation"> Ground Transportation</label>
+    <input type="checkbox" id="svc-wifi" name="services[]" value="WiFi">
+    <label for="svc-wifi">WiFi</label>
+  
+    <input type="checkbox" id="svc-catering" name="services[]" value="Catering">
+    <label for="svc-catering">Catering</label>
+  
+    <input type="checkbox" id="svc-ground" name="services[]" value="Ground Transportation">
+    <label for="svc-ground">Ground Transportation</label>
   </div>
-
+  
   <!-- Notes -->
   <label for="notes" style="margin-top:1rem;">Other Preferences or Notes:</label>
   <textarea id="notes" name="notes" rows="3" placeholder="Anything else I should keep in mind?"></textarea>
