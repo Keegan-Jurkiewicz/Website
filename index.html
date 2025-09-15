@@ -93,29 +93,80 @@
           </p>
         </article>
 
-        <!-- Contact -->
-        <article id="contact">
-          <h2 class="major">Contact</h2>
-          <form method="post" action="https://formspree.io/f/mnnajyeq">
-            <div class="fields">
-              <div class="field half">
-                <label for="name">Name</label>
-                <input type="text" name="name" id="name" required />
-              </div>
-              <div class="field half">
-                <label for="email">Email</label>
-                <input type="email" name="email" id="email" required />
-              </div>
-              <div class="field">
-                <label for="message">Message</label>
-                <textarea name="message" id="message" rows="4" required></textarea>
-              </div>
-            </div>
-            <ul class="actions">
-              <li><input type="submit" value="Send Message" class="primary" /></li>
-              <li><input type="reset" value="Reset" /></li>
-            </ul>
+        <!-- Contact/Get a Quote -->
+        <article id="contact/get a quote">
+          <h2 class="major">Contact/Get a Quote</h2>
+          <form action="https://formspree.io/f/xqadopqe" method="POST">
+            <h2>Itinerary</h2>
+          
+            <!-- Trip Type -->
+            <label>Trip Type:</label>
+            <select name="trip_type" required>
+              <option value="one_way">One Way</option>
+              <option value="round_trip">Round Trip</option>
+              <option value="multi_city">Multi City</option>
+            </select>
+          
+            <!-- Departure -->
+            <label>Departure Airport:</label>
+            <input type="text" name="departure_airport" placeholder="e.g. TEB or JFK" required>
+          
+            <!-- Arrival -->
+            <label>Arrival Airport:</label>
+            <input type="text" name="arrival_airport" placeholder="e.g. PBI or LAX" required>
+          
+            <!-- Preferred Routing -->
+            <label>Preferred Routing (if any):</label>
+            <input type="text" name="preferred_routing" placeholder="Optional">
+          
+            <!-- Dates -->
+            <label>Departure Date & Time:</label>
+            <input type="datetime-local" name="departure_time" required>
+            
+            <label>Return Date & Time (if applicable):</label>
+            <input type="datetime-local" name="return_time">
+          
+            <!-- Passenger Info -->
+            <label>Passenger Count:</label>
+            <input type="number" name="passenger_count" min="1" required>
+          
+            <label>Luggage Details:</label>
+            <textarea name="luggage_details" placeholder="Number of bags, golf clubs, skis, etc."></textarea>
+          
+            <!-- Aircraft Preferences -->
+            <label>Aircraft Preferences:</label>
+            <textarea name="aircraft_preferences" placeholder="Light Jet, Midsize, Heavy Jet, specific models, etc."></textarea>
+          
+            <!-- Safety Ratings -->
+            <label>Preferred Safety Rating:</label><br>
+            <input type="checkbox" name="safety_rating" value="argus_gold"> Argus Gold<br>
+            <input type="checkbox" name="safety_rating" value="argus_platinum"> Argus Platinum<br>
+            <input type="checkbox" name="safety_rating" value="wyvern"> Wyvern<br>
+          
+            <!-- Additional Services -->
+            <label>Additional Services:</label><br>
+            <input type="checkbox" name="services" value="wifi"> WiFi<br>
+            <input type="checkbox" name="services" value="catering"> Catering<br>
+            <input type="checkbox" name="services" value="car_driver"> Car/Driver<br>
+          
+            <!-- Special Notes -->
+            <label>Other Preferences or Notes:</label>
+            <textarea name="special_notes" placeholder="Anything else we should keep in mind?"></textarea>
+          
+            <!-- Contact Info -->
+            <label>Your Name:</label>
+            <input type="text" name="name" required>
+          
+            <label>Email:</label>
+            <input type="email" name="email" required>
+          
+            <label>Phone:</label>
+            <input type="tel" name="phone">
+          
+            <!-- Submit -->
+            <button type="submit">Submit Request</button>
           </form>
+          
 
           <ul class="icons">
             <li><a href="https://www.linkedin.com/in/keegangj2000" class="icon brands fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
