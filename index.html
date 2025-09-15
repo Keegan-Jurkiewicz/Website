@@ -128,67 +128,107 @@
           </p>
         </article>
 
-        <!-- Contact/Get Quote -->
+        <!-- === GET QUOTE === -->
         <article id="contact">
         <h2 class="major">Get Quote</h2>
-        <form action="https://formspree.io/f/xqadopqe" method="POST" accept-charset="utf-8">
-          <!-- Trip -->
-          <label>Trip Type:</label>
-          <select name="trip_type" required>
-            <option value="One Way">One Way</option>
-            <option value="Round Trip" selected>Round Trip</option>
-            <option value="Multi City">Multi City</option>
-          </select>
-        
-          <label>Departure Airport:</label>
-          <input type="text" name="depart_airport" placeholder="e.g. TEB or JFK" required>
-        
-          <label>Arrival Airport:</label>
-          <input type="text" name="arrive_airport" placeholder="e.g. PBI or LAX" required>
-        
-          <label>Departure Date &amp; Time:</label>
-          <input type="datetime-local" name="depart_datetime" required>
-        
-          <label>Return Date &amp; Time (if applicable):</label>
-          <input type="datetime-local" name="return_datetime">
-        
-          <label>Passenger Count:</label>
-          <input type="number" name="passengers" min="1" step="1" required>
-        
-          <label>Luggage Details:</label>
-          <textarea name="luggage" placeholder="Number of bags, golf clubs, skis, etc."></textarea>
-        
-          <label>Aircraft Preferences:</label>
-          <textarea name="aircraft_preferences" placeholder="Light jet, midsize, heavy jet, specific models, etc."></textarea>
-        
-          <fieldset>
-            <legend>Additional Services:</legend>
-            <label><input type="checkbox" name="services[]" value="WiFi"> WiFi</label>
-            <label><input type="checkbox" name="services[]" value="Catering"> Catering</label>
-            <label><input type="checkbox" name="services[]" value="Ground Transportation"> Ground Transportation</label>
-          </fieldset>
-        
-          <label>Other Preferences or Notes:</label>
-          <textarea name="notes" placeholder="Anything else we should keep in mind?"></textarea>
-        
-          <label>Your Name:</label>
-          <input type="text" name="name" required>
-        
-          <label>Email:</label>
-          <input type="email" name="email" required>
-        
-          <label>Phone:</label>
-          <input type="tel" name="phone">
-        
-          <!-- Formspree helpers -->
-          <input type="hidden" name="_subject" value="New Quote Request">
-          <input type="hidden" name="_redirect" value="https://keegan-jurkiewicz.github.io/Website/#thanks">
-          <!-- Optional: turn off captcha if you enabled it in dashboard
-          <input type="hidden" name="_captcha" value="false">
-          -->
-        
-          <button type="submit" class="primary">Submit Request</button>
-        </form>        
+<form action="https://formspree.io/f/xqadopqe" method="POST" id="quoteForm">
+
+  <!-- Trip Type -->
+  <label for="tripType">Trip Type:</label>
+  <select id="tripType" name="trip_type" required>
+    <option value="One Way">One Way</option>
+    <option value="Round Trip">Round Trip</option>
+    <option value="Multi City">Multi City</option>
+  </select>
+
+  <!-- Single-leg editors (used to add Multi-City legs as well) -->
+  <div class="leg-editor">
+    <div class="fields">
+      <div class="field half">
+        <label for="legFrom">From:</label>
+        <input id="legFrom" name="leg_from_temp" type="text" placeholder="e.g. TEB" autocomplete="off">
+      </div>
+      <div class="field half">
+        <label for="legTo">To:</label>
+        <input id="legTo" name="leg_to_temp" type="text" placeholder="e.g. PBI" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="fields">
+      <div class="field">
+        <label for="legDateTime">Departure Date &amp; Time:</label>
+        <input id="legDateTime" name="leg_datetime_temp" type="datetime-local" step="60">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" id="addLegBtn" class="button small">Add Leg</button>
+      <button type="button" id="clearLegsBtn" class="button small">Clear Legs</button>
+    </div>
+  </div>
+
+  <!-- Where added legs render -->
+  <div id="legsList" aria-live="polite" style="margin-top:1rem;"></div>
+
+  <!-- Read-only itinerary display (user cannot type here) -->
+  <label for="itineraryDisplay">Itinerary (auto-generated):</label>
+  <textarea id="itineraryDisplay" rows="3" placeholder="Legs will appear here automatically." readonly disabled></textarea>
+
+  <!-- Hidden JSON sent to Formspree -->
+  <input type="hidden" id="legsJson" name="legs_json" value="[]">
+
+  <!-- Round Trip helper (auto adds return leg when chosen) -->
+  <input type="hidden" id="rtAuto" name="round_trip_auto" value="false">
+
+  <!-- Passengers -->
+  <label for="passengers">Passenger Count:</label>
+  <input id="passengers" name="passenger_count" type="number" min="1" step="1" placeholder="e.g. 4">
+
+  <!-- Luggage -->
+  <label for="luggage">Luggage Details:</label>
+  <textarea id="luggage" name="luggage" rows="2" placeholder="Number of bags, golf clubs, skis, etc."></textarea>
+
+  <!-- Aircraft Preferences -->
+  <label for="aircraftPrefs">Aircraft Preferences:</label>
+  <textarea id="aircraftPrefs" name="aircraft_preferences" rows="2" placeholder="Light Jet, Midsize, Heavy Jet, specific models, etc."></textarea>
+
+  <!-- Additional Services (checkboxes) -->
+  <p style="margin:1rem 0 0.25rem;">Additional Services:</p>
+  <div class="fields" style="gap:.75rem; align-items:center;">
+    <label class="checkbox">
+      <input type="checkbox" name="services[]" value="WiFi">
+      <span>WiFi</span>
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" name="services[]" value="Catering">
+      <span>Catering</span>
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" name="services[]" value="Ground Transportation">
+      <span>Ground Transportation</span>
+    </label>
+  </div>
+
+  <!-- Notes -->
+  <label for="notes" style="margin-top:1rem;">Other Preferences or Notes:</label>
+  <textarea id="notes" name="notes" rows="3" placeholder="Anything else I should keep in mind?"></textarea>
+
+  <!-- Contact -->
+  <label for="name">Your Name:</label>
+  <input id="name" name="name" type="text" autocomplete="name">
+
+  <label for="email">Email:</label>
+  <input id="email" name="email" type="email" autocomplete="email" required>
+
+  <label for="phone">Phone:</label>
+  <input id="phone" name="phone" type="tel" autocomplete="tel">
+
+  <div class="actions" style="margin-top:1rem;">
+    <button class="primary" type="submit">Submit Request</button>
+  </div>
+</form>
+<!-- === /GET QUOTE === -->
+
         </article>        
           
 
@@ -411,7 +451,140 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
         setMode();
       })();
       </script>
-      
+      <script>
+        (() => {
+          const tripTypeSel   = document.getElementById('tripType');
+          const legFrom       = document.getElementById('legFrom');
+          const legTo         = document.getElementById('legTo');
+          const legDateTime   = document.getElementById('legDateTime');
+          const addLegBtn     = document.getElementById('addLegBtn');
+          const clearLegsBtn  = document.getElementById('clearLegsBtn');
+          const legsList      = document.getElementById('legsList');
+          const legsJsonInput = document.getElementById('legsJson');
+          const itineraryTA   = document.getElementById('itineraryDisplay');
+          const rtAutoInput   = document.getElementById('rtAuto');
+          const form          = document.getElementById('quoteForm');
+        
+          let legs = [];
+        
+          function render() {
+            // Render chips/list
+            legsList.innerHTML = '';
+            legs.forEach((leg, i) => {
+              const row = document.createElement('div');
+              row.style.cssText = 'display:flex;gap:.5rem;align-items:center;margin:.35rem 0;';
+              row.innerHTML = `
+                <div style="flex:1;opacity:.9;">
+                  <strong>Leg ${i+1}:</strong> ${leg.from} → ${leg.to}
+                  <span style="opacity:.8">(${leg.datetime || 'date/time TBD'})</span>
+                </div>
+                <button type="button" data-i="${i}" class="button small" style="min-width:4.5rem;">Remove</button>
+              `;
+              row.querySelector('button').addEventListener('click', (e) => {
+                const idx = parseInt(e.currentTarget.getAttribute('data-i'), 10);
+                legs.splice(idx, 1);
+                render();
+              });
+              legsList.appendChild(row);
+            });
+        
+            // Itinerary text (read-only)
+            itineraryTA.value = legs.map(
+              (l, i) => `Leg ${i+1}: ${l.from} → ${l.to} ${l.datetime ? `@ ${l.datetime}` : ''}`.trim()
+            ).join('\n');
+        
+            // Hidden JSON for submission
+            legsJsonInput.value = JSON.stringify(legs);
+          }
+        
+          function addLeg(from, to, dt) {
+            if (!from && !to && !dt) return; // nothing to add
+            legs.push({ from: (from||'').trim(), to: (to||'').trim(), datetime: dt || '' });
+            render();
+          }
+        
+          function clearEditor() {
+            legFrom.value = '';
+            legTo.value = '';
+            legDateTime.value = '';
+          }
+        
+          function clearAllLegs() {
+            legs = [];
+            render();
+          }
+        
+          // Trip type behavior
+          function handleTripTypeChange() {
+            const type = tripTypeSel.value;
+        
+            // For One Way / Round Trip, we treat the editor as the *main* leg.
+            // For Multi City, we allow any number of legs via Add Leg.
+            if (type === 'One Way') {
+              rtAutoInput.value = 'false';
+            } else if (type === 'Round Trip') {
+              rtAutoInput.value = 'true';
+            } else {
+              rtAutoInput.value = 'false';
+            }
+          }
+        
+          // Add leg button
+          addLegBtn.addEventListener('click', () => {
+            const from = legFrom.value;
+            const to   = legTo.value;
+            const dt   = legDateTime.value;
+        
+            if (!from || !to) {
+              // Light validation (no alerts to keep UX calm)
+              return;
+            }
+        
+            addLeg(from, to, dt);
+        
+            // If Round Trip and this is the first leg, auto-add return leg shell
+            if (tripTypeSel.value === 'Round Trip' && legs.length === 1) {
+              // Auto create return with swapped from/to and blank datetime
+              addLeg(to, from, '');
+            }
+        
+            clearEditor();
+          });
+        
+          // Clear legs button
+          clearLegsBtn.addEventListener('click', () => {
+            clearAllLegs();
+            clearEditor();
+          });
+        
+          // Keep textarea truly non-editable
+          itineraryTA.addEventListener('keydown', (e) => e.preventDefault());
+          itineraryTA.addEventListener('input',  (e) => { itineraryTA.value = itineraryTA.value; });
+        
+          // Ensure a leg exists for submit on One Way / Round Trip
+          form.addEventListener('submit', (e) => {
+            const type = tripTypeSel.value;
+        
+            if ((type === 'One Way' || type === 'Round Trip') && legs.length === 0) {
+              // Try to add the editor values as the first leg
+              if (legFrom.value && legTo.value) {
+                addLeg(legFrom.value, legTo.value, legDateTime.value);
+                // For Round Trip, auto return if still not present
+                if (type === 'Round Trip' && legs.length === 1) {
+                  addLeg(legTo.value, legFrom.value, '');
+                }
+              }
+            }
+            // legsJsonInput already holds the JSON snapshot
+          });
+        
+          // Init
+          tripTypeSel.addEventListener('change', handleTripTypeChange);
+          handleTripTypeChange();
+          render();
+        })();
+        </script>
+        
   </body>
 </html>
 
