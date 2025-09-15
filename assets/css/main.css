@@ -1655,3 +1655,7 @@ input, select, textarea {
 		body.is-preload #footer {
 			opacity: 0;
 		}
+
+/* Ensure nav links stay clickable above overlays */
+#header nav { position: relative; z-index: 5; }
+#header nav a { pointer-events: auto; }
