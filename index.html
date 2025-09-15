@@ -136,6 +136,10 @@
             <option value="One Way">One Way</option>
             <option value="Round Trip" selected>Round Trip</option>
             <option value="Multi City">Multi City</option>
+            <textarea id="legsSummary" name="itinerary_summary"
+          placeholder="Added legs will appear here automatically"
+          readonly onfocus="this.blur()" inputmode="none"
+          aria-readonly="true"></textarea>
           </select>
         
           <label>Departure Airport:</label>
@@ -153,17 +157,32 @@
           <label>Passenger Count:</label>
           <input type="number" name="passengers" min="1" step="1" required>
         
-          <label>Luggage Details:</label>
-          <textarea name="luggage" placeholder="Number of bags, golf clubs, skis, etc."></textarea>
-        
-          <label>Aircraft Preferences:</label>
-          <textarea name="aircraft_preferences" placeholder="Light jet, midsize, heavy jet, specific models, etc."></textarea>
-        
-          <fieldset>
-            <legend>Additional Services:</legend>
-            <label><input type="checkbox" name="services[]" value="WiFi"> WiFi</label>
-            <label><input type="checkbox" name="services[]" value="Catering"> Catering</label>
-            <label><input type="checkbox" name="services[]" value="Ground Transportation"> Ground Transportation</label>
+          <!-- Luggage details -->
+          <label for="luggageDetails">Luggage details:</label>
+          <textarea id="luggageDetails" name="luggage_details" placeholder="Number of bags, golf clubs, skis, etc."></textarea>
+
+          <!-- Aircraft preferences -->
+          <label for="aircraftPrefs">Aircraft preferences:</label>
+          <textarea id="aircraftPrefs" name="aircraft_preferences" placeholder="Light Jet, Midsize, Heavy Jet, specific models, etc."></textarea>
+
+          <!-- Additional services (checkboxes) -->
+          <fieldset class="extras">
+  <legend>Additional services:</legend>
+
+  <label class="chk">
+    <input type="checkbox" name="services[]" value="wifi">
+    <span>WiFi</span>
+  </label>
+
+  <label class="chk">
+    <input type="checkbox" name="services[]" value="catering">
+    <span>Catering</span>
+  </label>
+
+  <label class="chk">
+    <input type="checkbox" name="services[]" value="ground_transportation">
+    <span>Ground Transportation</span>
+  </label>
           </fieldset>
         
           <label>Other Preferences or Notes:</label>
