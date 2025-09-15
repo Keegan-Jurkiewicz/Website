@@ -22,7 +22,7 @@
     background: transparent;
     border: 1px solid #ffffff;
     border-radius: 4px;
-    color: #ffffff;
+    color: #141313;
     height: 2.75rem;
     padding: 0 1rem;
     width: 100%;
@@ -129,94 +129,64 @@
         </article>
 
         <!-- Contact/Get Quote -->
-        <article id="contact">
-          <h2 class="major">Get Quote</h2>
+        <form action="https://formspree.io/f/xqadopqe" method="POST" accept-charset="utf-8">
+          <!-- Trip -->
+          <label>Trip Type:</label>
+          <select name="trip_type" required>
+            <option value="One Way">One Way</option>
+            <option value="Round Trip" selected>Round Trip</option>
+            <option value="Multi City">Multi City</option>
+          </select>
         
-          <form id="quote-form" action="https://formspree.io/f/xqadopqe" method="POST">
-            <!-- TRIP TYPE -->
-            <label for="tripType">Trip Type:</label>
-            <select id="tripType" name="trip_type" required>
-              <option value="One Way">One Way</option>
-              <option value="Round Trip" selected>Round Trip</option>
-              <option value="Multi City">Multi City</option>
-            </select>
+          <label>Departure Airport:</label>
+          <input type="text" name="depart_airport" placeholder="e.g. TEB or JFK" required>
         
-            <!-- ONE-WAY / ROUND-TRIP BLOCK -->
-            <div id="simpleTrip">
-              <label for="from">Departure Airport:</label>
-              <input id="from" name="from_airport" type="text" placeholder="e.g. TEB or JFK" required>
+          <label>Arrival Airport:</label>
+          <input type="text" name="arrive_airport" placeholder="e.g. PBI or LAX" required>
         
-              <label for="to">Arrival Airport:</label>
-              <input id="to" name="to_airport" type="text" placeholder="e.g. PBI or LAX" required>
+          <label>Departure Date &amp; Time:</label>
+          <input type="datetime-local" name="depart_datetime" required>
         
-              <label for="depDT">Departure Date &amp; Time:</label>
-              <input id="depDT" name="departure_datetime" type="datetime-local" required>
+          <label>Return Date &amp; Time (if applicable):</label>
+          <input type="datetime-local" name="return_datetime">
         
-              <div id="returnBlock">
-                <label for="retDT">Return Date &amp; Time (if applicable):</label>
-                <input id="retDT" name="return_datetime" type="datetime-local">
-              </div>
-            </div>
+          <label>Passenger Count:</label>
+          <input type="number" name="passengers" min="1" step="1" required>
         
-            <!-- MULTI-CITY BLOCK -->
-            <div id="multiCity" style="display:none">
-              <div class="legs" id="legs"></div>
-              <div class="actions">
-                <button type="button" class="button small" id="addLeg">Add Leg</button>
-                <button type="button" class="button small" id="clearLegs">Clear Legs</button>
-              </div>
-              <!-- This captures a readable summary for Formspree -->
-              <textarea name="multi_city_summary" id="multiCitySummary" hidden></textarea>
-            </div>
+          <label>Luggage Details:</label>
+          <textarea name="luggage" placeholder="Number of bags, golf clubs, skis, etc."></textarea>
         
-            <!-- PASSENGERS / LUGGAGE -->
-            <label for="pax">Passenger Count:</label>
-            <input id="pax" name="passenger_count" type="number" min="1" step="1" placeholder="e.g. 6" required>
+          <label>Aircraft Preferences:</label>
+          <textarea name="aircraft_preferences" placeholder="Light jet, midsize, heavy jet, specific models, etc."></textarea>
         
-            <label for="luggage">Luggage Details:</label>
-            <textarea id="luggage" name="luggage_details" placeholder="Number of bags, golf clubs, skis, etc."></textarea>
+          <fieldset>
+            <legend>Additional Services:</legend>
+            <label><input type="checkbox" name="services[]" value="WiFi"> WiFi</label>
+            <label><input type="checkbox" name="services[]" value="Catering"> Catering</label>
+            <label><input type="checkbox" name="services[]" value="Ground Transportation"> Ground Transportation</label>
+          </fieldset>
         
-            <!-- AIRCRAFT PREFS -->
-            <label for="acPrefs">Aircraft Preferences:</label>
-            <textarea id="acPrefs" name="aircraft_preferences" placeholder="Light Jet, Midsize, Heavy Jet, specific models, etc."></textarea>
+          <label>Other Preferences or Notes:</label>
+          <textarea name="notes" placeholder="Anything else we should keep in mind?"></textarea>
         
-            <!-- ADDITIONAL SERVICES -->
-            <label>Additional Services:</label>
-            <div class="field">
-              <label>Additional Services:</label>
-              <div class="inline-checkboxes">
-                <input type="checkbox" id="svc-wifi" name="services[]" value="WiFi">
-                <label for="svc-wifi">WiFi</label>
-            
-                <input type="checkbox" id="svc-catering" name="services[]" value="Catering">
-                <label for="svc-catering">Catering</label>
-            
-                <input type="checkbox" id="svc-ground" name="services[]" value="Ground Transportation">
-                <label for="svc-ground">Ground Transportation</label>
-              </div>
-            </div>            
+          <label>Your Name:</label>
+          <input type="text" name="name" required>
         
-            <!-- NOTES -->
-            <label for="notes">Other preferences or notes:</label>
-            <textarea id="notes" name="notes" placeholder="Anything else we should keep in mind?"></textarea>
+          <label>Email:</label>
+          <input type="email" name="email" required>
         
-            <!-- CONTACT INFO -->
-            <label for="name">Your Name:</label>
-            <input id="name" name="name" type="text" required>
+          <label>Phone:</label>
+          <input type="tel" name="phone">
         
-            <label for="email">Email:</label>
-            <input id="email" name="email" type="email" required>
+          <!-- Formspree helpers -->
+          <input type="hidden" name="_subject" value="New Quote Request">
+          <input type="hidden" name="_redirect" value="https://keegan-jurkiewicz.github.io/Website/#thanks">
+          <!-- Optional: turn off captcha if you enabled it in dashboard
+          <input type="hidden" name="_captcha" value="false">
+          -->
         
-            <label for="phone">Phone:</label>
-            <input id="phone" name="phone" type="tel">
-        
-            <!-- Needed by Formspree to set a subject in the email you receive -->
-            <input type="hidden" name="_subject" value="New Itinerary Request from Website">
-            <!-- Where Formspree should redirect after success (optional) -->
-            <!-- <input type="hidden" name="_redirect" value="https://keegan-jurkiewicz.github.io/Website/#contact"> -->
-        
-            <button type="submit" class="primary">Submit Request</button>
-          </form>
+          <button type="submit" class="primary">Submit Request</button>
+        </form>        
         </article>        
           
 
