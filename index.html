@@ -130,6 +130,7 @@
 
         <!-- Contact/Get Quote -->
         <article id="contact">
+        <h2 class="major">Get Quote</h2>
         <form action="https://formspree.io/f/xqadopqe" method="POST" accept-charset="utf-8">
           <!-- Trip -->
           <label>Trip Type:</label>
@@ -137,7 +138,7 @@
             <option value="One Way">One Way</option>
             <option value="Round Trip" selected>Round Trip</option>
             <option value="Multi City">Multi City</option>
-            </select>
+          </select>
         
           <label>Departure Airport:</label>
           <input type="text" name="depart_airport" placeholder="e.g. TEB or JFK" required>
@@ -154,28 +155,17 @@
           <label>Passenger Count:</label>
           <input type="number" name="passengers" min="1" step="1" required>
         
-          <!-- Luggage details -->
-          <label for="luggageDetails">Luggage details:</label>
-          <textarea id="luggageDetails" name="luggage_details" placeholder="Number of bags, golf clubs, skis, etc."></textarea>
-
-          <!-- Aircraft preferences -->
-          <label for="aircraftPrefs">Aircraft preferences:</label>
-          <textarea id="aircraftPrefs" name="aircraft_preferences" placeholder="Light Jet, Midsize, Heavy Jet, specific models, etc."></textarea>
-
-          <div class="field">
-            <label>Additional Services:</label>
-            <div class="inline-checkboxes">
-              <input type="checkbox" id="svc-wifi" name="services[]" value="WiFi">
-              <label for="svc-wifi">WiFi</label>
-          
-              <input type="checkbox" id="svc-catering" name="services[]" value="Catering">
-              <label for="svc-catering">Catering</label>
-          
-              <input type="checkbox" id="svc-ground" name="services[]" value="Ground Transportation">
-              <label for="svc-ground">Ground Transportation</label>
-            </div>
-          </div>
-
+          <label>Luggage Details:</label>
+          <textarea name="luggage" placeholder="Number of bags, golf clubs, skis, etc."></textarea>
+        
+          <label>Aircraft Preferences:</label>
+          <textarea name="aircraft_preferences" placeholder="Light jet, midsize, heavy jet, specific models, etc."></textarea>
+        
+          <fieldset>
+            <legend>Additional Services:</legend>
+            <label><input type="checkbox" name="services[]" value="WiFi"> WiFi</label>
+            <label><input type="checkbox" name="services[]" value="Catering"> Catering</label>
+            <label><input type="checkbox" name="services[]" value="Ground Transportation"> Ground Transportation</label>
           </fieldset>
         
           <label>Other Preferences or Notes:</label>
