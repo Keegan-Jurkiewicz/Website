@@ -397,59 +397,136 @@
 					$window.on('load', function() {
 						$main._show(location.hash.substr(1), true);
 					});
-					document.addEventListener("DOMContentLoaded", function () {
-						const addLegBtn = document.getElementById("addLegBtn");
-						const clearLegsBtn = document.getElementById("clearLegsBtn");
-						const legsList = document.getElementById("legsList");
-					  
-						if (addLegBtn && legsList) {
-						  addLegBtn.addEventListener("click", function () {
-							const legDiv = document.createElement("div");
-							legDiv.className = "leg-entry";
-							legDiv.innerHTML = `
-							  <div class="fields">
-								<label>From:</label>
-								<input type="text" name="leg_from[]" placeholder="e.g. TEB" required>
-							  </div>
-							  <div class="fields">
-								<label>To:</label>
-								<input type="text" name="leg_to[]" placeholder="e.g. PBI" required>
-							  </div>
-							  <div class="fields">
-								<label>Departure Date & Time:</label>
-								<input type="datetime-local" name="leg_datetime[]" required>
-							  </div>
-							  <button type="button" class="removeLegBtn">Remove</button>
-							`;
-							legsList.appendChild(legDiv);
-					  
-							// Handle remove button
-							legDiv.querySelector(".removeLegBtn").addEventListener("click", () => {
-							  legsList.removeChild(legDiv);
-							});
-						  });
-					  
-						  clearLegsBtn.addEventListener("click", function () {
-							legsList.innerHTML = "";
-						  });
-						}
-					  });
-					  const tripTypeSelect = document.querySelector('select[name="trip_type"]');
-
-					  	if (tripTypeSelect) {
-							tripTypeSelect.addEventListener("change", function () {
-						  if (this.value === "Round Trip") {
-							legsList.innerHTML = ""; // Clear existing
-							addLegBtn.click(); // Add outbound leg
-							addLegBtn.click(); // Add return leg
-						  } else if (this.value === "Multi City") {
-							legsList.innerHTML = ""; // User will add manually
-						  } else {
-							legsList.innerHTML = ""; // One way, just one leg manually
-						  }
-						});
-					  }
-					   
-
-
+// ===== Get Quote: trip types + legs =====
+document.addEventListener('DOMContentLoaded', () => {
+	// --- Element refs (must match your index.html ids) ---
+	const tripTypeSel      = document.getElementById('trip_type');
+	const legFromTemp      = document.getElementById('legFrom');
+	const legToTemp        = document.getElementById('legTo');
+	const legDateTimeTemp  = document.getElementById('legDateTime');
+	const addLegBtn        = document.getElementById('addLegBtn');
+	const clearLegsBtn     = document.getElementById('clearLegsBtn');
+	const legsList         = document.getElementById('legsList');
+	const itineraryTA      = document.getElementById('itineraryDisplay'); // read-only textarea
+	const legsJsonHidden   = document.getElementById('legsJson');         // hidden input sent to Formspree
+	const rtAutoHidden     = document.getElementById('rtAuto');           // hidden "round_trip_auto" (optional)
+  
+	// If any required element is missing, bail quietly.
+	if (!tripTypeSel || !legFromTemp || !legToTemp || !legDateTimeTemp || !addLegBtn || !clearLegsBtn || !legsList) {
+	  return;
+	}
+  
+	// --- State ---
+	/** @type {{from:string,to:string,dt:string}[]} */
+	const legs = [];
+  
+	// --- Helpers ---
+	const tidy = (s) => (s || '').trim().toUpperCase();
+  
+	function clearEditor() {
+	  legFromTemp.value = '';
+	  legToTemp.value = '';
+	  legDateTimeTemp.value = '';
+	}
+  
+	function formatDT(dtStr) {
+	  if (!dtStr) return '—';
+	  // show local date & time nicely
+	  const d = new Date(dtStr);
+	  if (Number.isNaN(d.getTime())) return dtStr;
+	  // e.g., 2025-09-18 14:35
+	  const yyyy = d.getFullYear();
+	  const mm = String(d.getMonth()+1).padStart(2,'0');
+	  const dd = String(d.getDate()).padStart(2,'0');
+	  const hh = String(d.getHours()).padStart(2,'0');
+	  const mi = String(d.getMinutes()).padStart(2,'0');
+	  return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
+	}
+  
+	function renderLegs() {
+	  // Render the list with remove buttons
+	  legsList.innerHTML = '';
+	  if (legs.length) {
+		legs.forEach((leg, idx) => {
+		  const row = document.createElement('div');
+		  row.className = 'leg-row';
+		  row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin:.4rem 0;';
+		  const label = document.createElement('div');
+		  label.textContent = `Leg ${idx+1}: ${leg.from} ➜ ${leg.to} @ ${formatDT(leg.dt)}`;
+		  const remove = document.createElement('button');
+		  remove.type = 'button';
+		  remove.className = 'button small removeLegBtn';
+		  remove.dataset.idx = String(idx);
+		  remove.textContent = 'Remove';
+		  row.appendChild(label);
+		  row.appendChild(remove);
+		  legsList.appendChild(row);
+		});
+	  }
+  
+	  // Update the read-only itinerary textarea (nice for the user)
+	  if (itineraryTA) {
+		itineraryTA.value = legs.length
+		  ? legs.map((l, i) => `Leg ${i+1}: ${l.from} ➜ ${l.to} @ ${formatDT(l.dt)}`).join('\n')
+		  : '';
+	  }
+  
+	  // Update the hidden JSON for Formspree (this is what you’ll read in the email)
+	  if (legsJsonHidden) {
+		legsJsonHidden.value = JSON.stringify(legs);
+	  }
+	}
+  
+	// --- Trip type changes ---
+	tripTypeSel.addEventListener('change', () => {
+	  // Reset any auto-RT flag (optional, safe if missing)
+	  if (rtAutoHidden) rtAutoHidden.value = (tripTypeSel.value === 'Round Trip') ? 'true' : 'false';
+	  // We do NOT auto-clear legs on type change; user might be toggling.
+	  // If you WANT to clear, uncomment next two lines:
+	  // legs.length = 0;
+	  // renderLegs();
+	});
+  
+	// --- Add leg ---
+	addLegBtn.addEventListener('click', () => {
+	  const from = tidy(legFromTemp.value);
+	  const to   = tidy(legToTemp.value);
+	  const dt   = (legDateTimeTemp.value || '').trim();
+  
+	  if (!from || !to || !dt) {
+		alert('Please fill From, To, and Departure Date & Time for this leg.');
+		return;
+	  }
+  
+	  // Add the leg the user just entered
+	  legs.push({ from, to, dt });
+  
+	  // If Round Trip and this is the first leg, auto-add a return leg (date left blank)
+	  if (tripTypeSel.value === 'Round Trip' && legs.length === 1) {
+		legs.push({ from: to, to: from, dt: '' });
+		if (rtAutoHidden) rtAutoHidden.value = 'true';
+	  }
+  
+	  renderLegs();
+	  clearEditor();
+	});
+  
+	// --- Clear all legs ---
+	clearLegsBtn.addEventListener('click', () => {
+	  legs.length = 0;
+	  renderLegs();
+	});
+  
+	// --- Remove a single leg (event delegation) ---
+	legsList.addEventListener('click', (e) => {
+	  const btn = e.target.closest?.('.removeLegBtn');
+	  if (!btn) return;
+	  const idx = parseInt(btn.dataset.idx, 10);
+	  if (!Number.isNaN(idx)) {
+		legs.splice(idx, 1);
+		renderLegs();
+	  }
+	});
+  });
+  
 })(jQuery);

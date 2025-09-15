@@ -131,59 +131,49 @@
         <h2 class="major">Get Quote</h2>
 <form action="https://formspree.io/f/xqadopqe" method="POST" id="quoteForm">
 
-  <!-- Trip Type -->
-  <label for="tripType">Trip Type:</label>
-  <select id="tripType" name="trip_type" required>
-    <option value="One Way">One Way</option>
-    <option value="Round Trip">Round Trip</option>
-    <option value="Multi City">Multi City</option>
-  </select>
+<!-- Trip Type -->
+<label for="tripType">Trip Type:</label>
+<select id="tripType" name="trip_type" required>
+  <option value="One Way">One Way</option>
+  <option value="Round Trip">Round Trip</option>
+  <option value="Multi City">Multi City</option>
+</select>
 
-  <!-- Single-leg editors (used to add Multi-City legs as well) -->
-  <div class="leg-editor">
-    <div class="fields">
-      <div class="field half">
-        <label for="legFrom">From:</label>
-        <input id="legFrom" name="leg_from_temp" type="text" placeholder="e.g. TEB" autocomplete="off">
-      </div>
-      <div class="field half">
-        <label for="legTo">To:</label>
-        <input id="legTo" name="leg_to_temp" type="text" placeholder="e.g. PBI" autocomplete="off">
-      </div>
+<!-- Single-leg editor (used to add legs) -->
+<div id="leg-editor">
+  <div class="fields">
+    <div class="field half">
+      <label for="legFrom">From:</label>
+      <input id="legFrom" name="leg_from_temp" type="text" placeholder="e.g. TEB" autocomplete="off" />
     </div>
-
-    <div class="fields">
-      <div class="field">
-        <label for="legDateTime">Departure Date &amp; Time:</label>
-        <input id="legDateTime" name="leg_datetime_temp" type="datetime-local" step="60">
-      </div>
-    </div>
-
-    <div class="fields" id="returnDateContainer" style="display: none;">
-      <div class="field">
-        <label for="returnDateTime">Return Date &amp; Time:</label>
-        <input id="returnDateTime" name="return_datetime" type="datetime-local" step="60">
-      </div>
-    </div>    
-
-    <div class="actions">
-      <button type="button" id="addLegBtn" class="button small">Add Leg</button>
-      <button type="button" id="clearLegsBtn" class="button small">Clear Legs</button>
+    <div class="field half">
+      <label for="legTo">To:</label>
+      <input id="legTo" name="leg_to_temp" type="text" placeholder="e.g. PBI" autocomplete="off" />
     </div>
   </div>
 
-  <!-- Where added legs render -->
-  <div id="legsList" aria-live="polite" style="margin-top:1rem;"></div>
+  <div class="fields">
+    <div class="field">
+      <label for="legDateTime">Departure Date &amp; Time:</label>
+      <input id="legDateTime" name="leg_datetime_temp" type="datetime-local" step="60" />
+    </div>
+  </div>
 
-  <!-- Read-only itinerary display (user cannot type here) -->
-  <label for="itineraryDisplay">Itinerary (auto-generated):</label>
-  <textarea id="itineraryDisplay" rows="3" placeholder="Legs will appear here automatically." readonly disabled></textarea>
+  <div class="actions">
+    <button type="button" id="addLegBtn" class="button small">Add Leg</button>
+    <button type="button" id="clearLegsBtn" class="button small">Clear Legs</button>
+  </div>
+</div>
 
-  <!-- Hidden JSON sent to Formspree -->
-  <input type="hidden" id="legsJson" name="legs_json" value="[]">
+<!-- Where added legs render (NO inputs here) -->
+<div id="legsList" aria-live="polite" style="margin-top:1rem;"></div>
 
-  <!-- Round Trip helper (auto adds return leg when chosen) -->
-  <input type="hidden" id="rtAuto" name="round_trip_auto" value="false">
+<!-- Read-only itinerary text (for human view) -->
+<label for="itineraryDisplay">Itinerary (auto-generated):</label>
+<textarea id="itineraryDisplay" rows="3" placeholder="Legs will appear here automatically." readonly></textarea>
+
+<!-- Hidden JSON sent to Formspree -->
+<input type="hidden" id="legsJson" name="legs_json" value="[]">
 
   <!-- Passengers -->
   <label for="passengers">Passenger Count:</label>
