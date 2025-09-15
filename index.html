@@ -193,20 +193,11 @@
   <textarea id="aircraftPrefs" name="aircraft_preferences" rows="2" placeholder="Light Jet, Midsize, Heavy Jet, specific models, etc."></textarea>
 
   <!-- Additional Services (checkboxes) -->
-  <p style="margin:1rem 0 0.25rem;">Additional Services:</p>
-  <div class="fields" style="gap:.75rem; align-items:center;">
-    <label class="checkbox">
-      <input type="checkbox" name="services[]" value="WiFi">
-      <span>WiFi</span>
-    </label>
-    <label class="checkbox">
-      <input type="checkbox" name="services[]" value="Catering">
-      <span>Catering</span>
-    </label>
-    <label class="checkbox">
-      <input type="checkbox" name="services[]" value="Ground Transportation">
-      <span>Ground Transportation</span>
-    </label>
+  <label class="group-label">Additional Services:</label>
+  <div class="services-inline">
+    <label><input type="checkbox" name="services[]" value="WiFi"> WiFi</label>
+    <label><input type="checkbox" name="services[]" value="Catering"> Catering</label>
+    <label><input type="checkbox" name="services[]" value="Ground Transportation"> Ground Transportation</label>
   </div>
 
   <!-- Notes -->
