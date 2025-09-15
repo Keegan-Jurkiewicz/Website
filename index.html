@@ -10,6 +10,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
     <link rel="stylesheet" href="assets/css/main.css" />
+    <!-- Quick form overrides (keeps main.css untouched) -->
+<style>
+  /* Make date/time/number inputs behave and match the theme */
+  #contact input[type="number"],
+  #contact input[type="date"],
+  #contact input[type="time"],
+  #contact input[type="datetime-local"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+    color: #ffffff;
+    height: 2.75rem;
+    padding: 0 1rem;
+    width: 100%;
+    outline: 0;
+    transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out, background-color .2s ease-in-out;
+  }
+  #contact input[type="number"]:focus,
+  #contact input[type="date"]:focus,
+  #contact input[type="time"]:focus,
+  #contact input[type="datetime-local"]:focus {
+    background: rgba(255,255,255,0.075);
+    border-color: #ffffff;
+    box-shadow: 0 0 0 1px #ffffff;
+  }
+
+  /* Neat row for the three checkboxes */
+  #contact .inline-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    align-items: center;
+  }
+</style>
     <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 
     <!-- Font Awesome from CDN -->
@@ -146,11 +182,19 @@
         
             <!-- ADDITIONAL SERVICES -->
             <label>Additional Services:</label>
-            <div class="fields">
-              <label><input type="checkbox" name="services" value="WiFi"> WiFi</label>
-              <label><input type="checkbox" name="services" value="Catering"> Catering</label>
-              <label><input type="checkbox" name="services" value="Ground Transportation"> Ground Transportation</label>
-            </div>
+            <div class="field">
+              <label>Additional Services:</label>
+              <div class="inline-checkboxes">
+                <input type="checkbox" id="svc-wifi" name="services[]" value="WiFi">
+                <label for="svc-wifi">WiFi</label>
+            
+                <input type="checkbox" id="svc-catering" name="services[]" value="Catering">
+                <label for="svc-catering">Catering</label>
+            
+                <input type="checkbox" id="svc-ground" name="services[]" value="Ground Transportation">
+                <label for="svc-ground">Ground Transportation</label>
+              </div>
+            </div>            
         
             <!-- NOTES -->
             <label for="notes">Other preferences or notes:</label>
