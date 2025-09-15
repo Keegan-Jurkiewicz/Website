@@ -1715,4 +1715,6 @@ input, select, textarea {
 	  gap: 0.75rem 1.25rem;
 	}
   }
-  
+  .services-row label {
+	margin-right: 2rem;   /* space between options */
+  }   
