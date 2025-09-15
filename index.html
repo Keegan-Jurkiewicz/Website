@@ -95,76 +95,85 @@
         <!-- Contact/Get Quote -->
         <article id="contact">
           <h2 class="major">Get Quote</h2>
-          <form action="https://formspree.io/f/xqadopqe" method="POST">
-            <h2>Itinerary</h2>
-          
-            <!-- Trip Type -->
-            <label>Trip Type:</label>
-            <select name="trip_type" required>
-              <option value="one_way">One Way</option>
-              <option value="round_trip">Round Trip</option>
-              <option value="multi_city">Multi City</option>
+        
+          <form id="quote-form" action="https://formspree.io/f/xqadopqe" method="POST">
+            <!-- TRIP TYPE -->
+            <label for="tripType">Trip Type:</label>
+            <select id="tripType" name="trip_type" required>
+              <option value="One Way">One Way</option>
+              <option value="Round Trip" selected>Round Trip</option>
+              <option value="Multi City">Multi City</option>
             </select>
-          
-            <!-- Departure -->
-            <label>Departure Airport:</label>
-            <input type="text" name="departure_airport" placeholder="e.g. TEB or JFK" required>
-          
-            <!-- Arrival -->
-            <label>Arrival Airport:</label>
-            <input type="text" name="arrival_airport" placeholder="e.g. PBI or LAX" required>
-          
-            <!-- Preferred Routing -->
-            <label>Preferred Routing (if any):</label>
-            <input type="text" name="preferred_routing" placeholder="Optional">
-          
-            <!-- Dates -->
-            <label>Departure Date & Time:</label>
-            <input type="datetime-local" name="departure_time" required>
-            
-            <label>Return Date & Time (if applicable):</label>
-            <input type="datetime-local" name="return_time">
-          
-            <!-- Passenger Info -->
-            <label>Passenger Count:</label>
-            <input type="number" name="passenger_count" min="1" required>
-          
-            <label>Luggage Details:</label>
-            <textarea name="luggage_details" placeholder="Number of bags, golf clubs, skis, etc."></textarea>
-          
-            <!-- Aircraft Preferences -->
-            <label>Aircraft Preferences:</label>
-            <textarea name="aircraft_preferences" placeholder="Light Jet, Midsize, Heavy Jet, specific models, etc."></textarea>
-          
-            <!-- Safety Ratings -->
-            <label>Preferred Safety Rating:</label><br>
-            <input type="checkbox" name="safety_rating" value="argus_gold"> Argus Gold<br>
-            <input type="checkbox" name="safety_rating" value="argus_platinum"> Argus Platinum<br>
-            <input type="checkbox" name="safety_rating" value="wyvern"> Wyvern<br>
-          
-            <!-- Additional Services -->
-            <label>Additional Services:</label><br>
-            <input type="checkbox" name="services" value="wifi"> WiFi<br>
-            <input type="checkbox" name="services" value="catering"> Catering<br>
-            <input type="checkbox" name="services" value="car_driver"> Car/Driver<br>
-          
-            <!-- Special Notes -->
-            <label>Other Preferences or Notes:</label>
-            <textarea name="special_notes" placeholder="Anything else we should keep in mind?"></textarea>
-          
-            <!-- Contact Info -->
-            <label>Your Name:</label>
-            <input type="text" name="name" required>
-          
-            <label>Email:</label>
-            <input type="email" name="email" required>
-          
-            <label>Phone:</label>
-            <input type="tel" name="phone">
-          
-            <!-- Submit -->
-            <button type="submit">Submit Request</button>
+        
+            <!-- ONE-WAY / ROUND-TRIP BLOCK -->
+            <div id="simpleTrip">
+              <label for="from">Departure Airport:</label>
+              <input id="from" name="from_airport" type="text" placeholder="e.g. TEB or JFK" required>
+        
+              <label for="to">Arrival Airport:</label>
+              <input id="to" name="to_airport" type="text" placeholder="e.g. PBI or LAX" required>
+        
+              <label for="depDT">Departure Date &amp; Time:</label>
+              <input id="depDT" name="departure_datetime" type="datetime-local" required>
+        
+              <div id="returnBlock">
+                <label for="retDT">Return Date &amp; Time (if applicable):</label>
+                <input id="retDT" name="return_datetime" type="datetime-local">
+              </div>
+            </div>
+        
+            <!-- MULTI-CITY BLOCK -->
+            <div id="multiCity" style="display:none">
+              <div class="legs" id="legs"></div>
+              <div class="actions">
+                <button type="button" class="button small" id="addLeg">Add Leg</button>
+                <button type="button" class="button small" id="clearLegs">Clear Legs</button>
+              </div>
+              <!-- This captures a readable summary for Formspree -->
+              <textarea name="multi_city_summary" id="multiCitySummary" hidden></textarea>
+            </div>
+        
+            <!-- PASSENGERS / LUGGAGE -->
+            <label for="pax">Passenger Count:</label>
+            <input id="pax" name="passenger_count" type="number" min="1" step="1" placeholder="e.g. 6" required>
+        
+            <label for="luggage">Luggage Details:</label>
+            <textarea id="luggage" name="luggage_details" placeholder="Number of bags, golf clubs, skis, etc."></textarea>
+        
+            <!-- AIRCRAFT PREFS -->
+            <label for="acPrefs">Aircraft Preferences:</label>
+            <textarea id="acPrefs" name="aircraft_preferences" placeholder="Light Jet, Midsize, Heavy Jet, specific models, etc."></textarea>
+        
+            <!-- ADDITIONAL SERVICES -->
+            <label>Additional Services:</label>
+            <div class="fields">
+              <label><input type="checkbox" name="services" value="WiFi"> WiFi</label>
+              <label><input type="checkbox" name="services" value="Catering"> Catering</label>
+              <label><input type="checkbox" name="services" value="Ground Transportation"> Ground Transportation</label>
+            </div>
+        
+            <!-- NOTES -->
+            <label for="notes">Other preferences or notes:</label>
+            <textarea id="notes" name="notes" placeholder="Anything else we should keep in mind?"></textarea>
+        
+            <!-- CONTACT INFO -->
+            <label for="name">Your Name:</label>
+            <input id="name" name="name" type="text" required>
+        
+            <label for="email">Email:</label>
+            <input id="email" name="email" type="email" required>
+        
+            <label for="phone">Phone:</label>
+            <input id="phone" name="phone" type="tel">
+        
+            <!-- Needed by Formspree to set a subject in the email you receive -->
+            <input type="hidden" name="_subject" value="New Itinerary Request from Website">
+            <!-- Where Formspree should redirect after success (optional) -->
+            <!-- <input type="hidden" name="_redirect" value="https://keegan-jurkiewicz.github.io/Website/#contact"> -->
+        
+            <button type="submit" class="primary">Submit Request</button>
           </form>
+        </article>        
           
 
           <ul class="icons">
@@ -279,6 +288,114 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
     <script src="assets/js/breakpoints.min.js"></script>
     <script src="assets/js/util.js"></script>
     <script src="assets/js/main.js"></script>
+    <script>
+      (function () {
+        const tripType = document.getElementById('tripType');
+        const simpleTrip = document.getElementById('simpleTrip');
+        const returnBlock = document.getElementById('returnBlock');
+        const multiCity = document.getElementById('multiCity');
+        const legsWrap = document.getElementById('legs');
+        const addLegBtn = document.getElementById('addLeg');
+        const clearLegsBtn = document.getElementById('clearLegs');
+        const summaryField = document.getElementById('multiCitySummary');
+        const form = document.getElementById('quote-form');
+      
+        function legTemplate(i) {
+          const wrap = document.createElement('div');
+          wrap.className = 'box';
+          wrap.style.marginBottom = '1rem';
+          wrap.innerHTML = `
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+              <div>
+                <label>From:</label>
+                <input type="text" name="leg_${i}_from" placeholder="e.g. TEB" required>
+              </div>
+              <div>
+                <label>To:</label>
+                <input type="text" name="leg_${i}_to" placeholder="e.g. PBI" required>
+              </div>
+            </div>
+            <label style="margin-top:0.5rem;">Departure Date &amp; Time:</label>
+            <input type="datetime-local" name="leg_${i}_datetime" required>
+            <div style="text-align:right; margin-top:0.5rem;">
+              <button type="button" class="button small removeLeg">Remove</button>
+            </div>
+          `;
+          return wrap;
+        }
+      
+        function renumberLegs() {
+          [...legsWrap.querySelectorAll('.box')].forEach((box, idx) => {
+            box.querySelectorAll('input').forEach(inp => {
+              const parts = inp.name.split('_');
+              parts[1] = idx + 1;
+              inp.name = parts.join('_');
+            });
+          });
+        }
+      
+        function buildSummary() {
+          const legs = [...legsWrap.querySelectorAll('.box')].map((box, i) => {
+            const from = box.querySelector('input[name^="leg_"][name$="_from"]').value.trim();
+            const to = box.querySelector('input[name^="leg_"][name$="_to"]').value.trim();
+            const dt = box.querySelector('input[type="datetime-local"]').value;
+            return `Leg ${i+1}: ${from} → ${to} @ ${dt}`;
+          });
+          summaryField.value = legs.join('\n');
+        }
+      
+        function setMode() {
+          const mode = tripType.value;
+          if (mode === 'Multi City') {
+            simpleTrip.style.display = 'none';
+            multiCity.style.display = '';
+            if (!legsWrap.children.length) addLegBtn.click();
+          } else {
+            multiCity.style.display = 'none';
+            simpleTrip.style.display = '';
+            // Only show return date for round trip
+            returnBlock.style.display = (mode === 'Round Trip') ? '' : 'none';
+          }
+        }
+      
+        tripType.addEventListener('change', setMode);
+      
+        addLegBtn.addEventListener('click', () => {
+          const i = legsWrap.children.length + 1;
+          const el = legTemplate(i);
+          legsWrap.appendChild(el);
+          renumberLegs();
+        });
+      
+        clearLegsBtn.addEventListener('click', () => {
+          legsWrap.innerHTML = '';
+        });
+      
+        legsWrap.addEventListener('click', (e) => {
+          if (e.target.classList.contains('removeLeg')) {
+            e.target.closest('.box').remove();
+            renumberLegs();
+          }
+        });
+      
+        form.addEventListener('submit', (e) => {
+          if (tripType.value === 'Multi City') {
+            if (!legsWrap.children.length) {
+              e.preventDefault();
+              alert('Please add at least one leg.');
+              return;
+            }
+            buildSummary();
+          } else {
+            summaryField.value = ''; // not used
+          }
+        });
+      
+        // init
+        setMode();
+      })();
+      </script>
+      
   </body>
 </html>
 
