@@ -644,20 +644,19 @@ input, select, textarea {
 		position: relative;
 	}
 
-		.image:before {
-			pointer-events: none;
-			background-image: url("../../images/IMG_8345.jpg");
-			background-color: rgba(19, 21, 25, 0.5);
-			border-radius: 4px;
-			content: '';
-			display: block;
-			height: 100%;
-			left: 0;
-			opacity: 0.5;
-			position: absolute;
-			top: 0;
-			width: 100%;
-		}
+	.image:before {
+		pointer-events: none;
+		background-color: rgba(19, 21, 25, 0.15); /* subtle dark tint only */
+		border-radius: 4px;
+		content: '';
+		display: block;
+		height: 100%;
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: 100%;
+	  }
+	  
 
 		.image img {
 			border-radius: 4px;
