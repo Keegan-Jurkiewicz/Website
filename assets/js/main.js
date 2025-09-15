@@ -548,11 +548,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	var legs = [];
   
 	function getTripType() {
-	  var v = (tripTypeEl.value || '').toLowerCase();
-	  if (v.includes('round')) return 'round';
-	  if (v.includes('multi')) return 'multi';
-	  return 'one';
-	}
+		var v = (tripTypeEl.value || '').toLowerCase();
+		if (v.includes('multi')) return 'multi'; // now covers round trip + multi-city
+		return 'one';
+	  }	  
   
 	function formatDT(dt) {
 	  if (!dt) return '';
